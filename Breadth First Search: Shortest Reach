@@ -1,0 +1,124 @@
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.regex.*;
+
+public class Solution {
+    
+    // Complete the bfs function below.
+    static void bfs(int s, ArrayList<ArrayList<Integer>> list,boolean [] visited,int [] dis)
+    {
+        
+        LinkedList<Integer> queue = new LinkedList<Integer>();
+        visited[s]=true; 
+        queue.add(s);
+        queue.add(-1);
+        dis[s]=-1;
+        int count=6;
+        while(queue.size()>1)
+        {
+            int p = queue.poll();
+            if(p==-1)
+            {
+                count+=6;
+                 queue.add(-1);
+            }
+            else
+            {
+            Iterator<Integer>i=list.get(p).listIterator(); 
+            while(i.hasNext()) 
+            { 
+                int n=i.next(); 
+                if(!visited[n]) 
+                { 
+                    visited[n]=true; 
+                    queue.add(n); 
+                    dis[n]=count;
+                } 
+            }
+           
+            }
+        }
+    }
+    static int[] bfs(int n, int m, int[][] cities, int s) {
+        int i;
+        ArrayList<ArrayList<Integer>> a=new ArrayList<ArrayList<Integer>>();
+        for(i=0;i<=n;i++)
+        {
+            a.add(i,new ArrayList<Integer>());
+        }
+        
+        for(i=0;i<cities.length;i++)
+        {
+                a.get(cities[i][0]).add(cities[i][1]);
+                a.get(cities[i][1]).add(cities[i][0]);
+        }
+        boolean [] vis=new boolean[n+1];
+        int [] dist=new int[n+1]; 
+        bfs(s,a,vis,dist);
+        int [] lm=new int[n-1];
+        int y=0;
+        for(i=1;i<dist.length;i++)
+        {
+           if(i!=s)
+           {
+               if(dist[i]!=0)
+               lm[y++]=dist[i];
+               else if(dist[i]==0)
+               lm[y++]=-1;
+           }
+        }
+        return lm;
+    }
+
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) throws IOException {
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+
+        int q = scanner.nextInt();
+        scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
+
+        for (int qItr = 0; qItr < q; qItr++) {
+            String[] nm = scanner.nextLine().split(" ");
+
+            int n = Integer.parseInt(nm[0]);
+
+            int m = Integer.parseInt(nm[1]);
+
+            int[][] edges = new int[m][2];
+
+            for (int i = 0; i < m; i++) {
+                String[] edgesRowItems = scanner.nextLine().split(" ");
+                scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
+
+                for (int j = 0; j < 2; j++) {
+                    int edgesItem = Integer.parseInt(edgesRowItems[j]);
+                    edges[i][j] = edgesItem;
+                }
+            }
+
+            int s = scanner.nextInt();
+            scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
+
+            int[] result = bfs(n, m, edges, s);
+
+            for (int i = 0; i < result.length; i++) {
+                bufferedWriter.write(String.valueOf(result[i]));
+
+                if (i != result.length - 1) {
+                    bufferedWriter.write(" ");
+                }
+            }
+
+            bufferedWriter.newLine();
+        }
+
+        bufferedWriter.close();
+
+        scanner.close();
+    }
+}
